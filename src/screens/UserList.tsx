@@ -3,6 +3,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   RefreshControl,
   StyleSheet,
   Text,
@@ -76,10 +77,15 @@ const UserList = () => {
   // Make sure data is not loading and render error if has any
   if (!loading && error && !refreshing) {
     return (
-      <View style={[styles.container, {justifyContent: 'center'}]}>
+      <View style={styles.errorContainer}>
         <Text style={styles.errorText}>
           {String(error || 'Something went wrong')}
         </Text>
+        <Pressable
+          style={styles.tryAgainButton}
+          onPress={() => dispatch(fetchUsers())}>
+          <Text style={styles.tryAgainText}>Try again</Text>
+        </Pressable>
       </View>
     );
   }
@@ -111,6 +117,7 @@ const styles = StyleSheet.create({
   errorText: {
     width: '90%',
     fontSize: 20,
+    alignSelf: 'center',
     fontWeight: '800',
     color: COLORS.black,
     textAlign: 'center',
@@ -125,5 +132,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginVertical: 5,
+  },
+  errorContainer: {
+    flex: 1,
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+  tryAgainButton: {
+    width: 120,
+    height: 40,
+    borderRadius: 10,
+    marginVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.black,
+  },
+  tryAgainText: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: COLORS.white,
   },
 });
