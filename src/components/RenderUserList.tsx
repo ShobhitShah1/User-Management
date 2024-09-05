@@ -1,13 +1,19 @@
-import React, {memo} from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import React, {memo, useCallback} from 'react';
+import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {COLORS} from '../theme/Theme';
 import {User} from '../types/interfaces';
+import {useNavigation} from '@react-navigation/native';
 
 const RenderUserList = ({item}: {item: User}) => {
   const {picture, name, email, phone, dob} = item;
+  const navigation = useNavigation();
+
+  const onPressCard = useCallback(() => {
+    navigation.navigate('UserDetail', {userData: item});
+  }, [item, navigation]);
 
   return (
-    <View style={styles.container}>
+    <Pressable onPress={onPressCard} style={styles.container}>
       <Image source={{uri: picture.medium}} style={styles.profileImage} />
       <View style={styles.userDetailView}>
         <Text style={styles.name}>
@@ -17,7 +23,7 @@ const RenderUserList = ({item}: {item: User}) => {
         <Text style={styles.phone}>{phone}</Text>
         <Text style={styles.dob}>Age: {dob?.age}</Text>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

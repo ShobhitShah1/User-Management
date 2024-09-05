@@ -1,8 +1,9 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  RefreshControl,
   StyleSheet,
   Text,
   View,
@@ -10,26 +11,45 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import RenderUserList from '../components/RenderUserList';
 import {AppDispatch, RootState} from '../redux/store';
-import {fetchUsers, incrementPage} from '../redux/userDataSlice';
+import {fetchUsers, incrementPage, resetUsers} from '../redux/userDataSlice';
 import {COLORS} from '../theme/Theme';
 
 const UserList = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const [refreshing, setRefreshing] = useState(false);
+
   const {users, loading, error, page} = useSelector(
     (state: RootState) => state.users,
   );
 
+  // Calling data on page load
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch, page]);
 
+  // Just to make sure refreshing is false when data is loaded
+  useEffect(() => {
+    if (refreshing && !loading) {
+      setRefreshing(false);
+    }
+  }, [loading, refreshing]);
+
+  // Increment page and fetch data
   const loadMoreData = useCallback(() => {
     if (!loading) {
       dispatch(incrementPage());
       dispatch(fetchUsers());
     }
-  }, [dispatch, loading, page]);
+  }, [dispatch, loading]);
 
+  // Refresh data (it will reset page with page 1 and fetch data again)
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    dispatch(resetUsers());
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
+  // When more data is loading then show loader in bottom
   const listFooterComponent = () => {
     if (loading) {
       return (
@@ -42,7 +62,8 @@ const UserList = () => {
     return null;
   };
 
-  if (loading && page === 1) {
+  // When there is no data show loader in full screen (this loader will show only first time data load)
+  if (loading && page === 1 && !refreshing) {
     return (
       <View style={[styles.container, {justifyContent: 'center'}]}>
         <ActivityIndicator size="large" color={COLORS.black} />
@@ -50,6 +71,7 @@ const UserList = () => {
     );
   }
 
+  // Make sure data is not loading and render error if has any
   if (!loading && error) {
     return (
       <View style={[styles.container, {justifyContent: 'center'}]}>
@@ -66,6 +88,9 @@ const UserList = () => {
         data={users}
         onEndReached={loadMoreData}
         onEndReachedThreshold={0.5}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         ListFooterComponent={listFooterComponent}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => <RenderUserList item={item} />}

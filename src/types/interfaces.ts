@@ -1,3 +1,16 @@
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+export type RootStackParamList = {
+  UserList: undefined;
+  UserDetail: {
+    userData: User;
+  };
+};
+
 // API response types
 export type User = {
   gender: string;

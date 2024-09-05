@@ -3,8 +3,9 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import UserDetail from '../screens/UserDetail';
 import UserList from '../screens/UserList';
+import {RootStackParamList} from '../types/interfaces';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const MainRoute = () => {
   return (
