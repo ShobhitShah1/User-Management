@@ -11,7 +11,7 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import RenderUserList from '../components/RenderUserList';
 import {AppDispatch, RootState} from '../redux/store';
-import {fetchUsers, incrementPage, resetUsers} from '../redux/userDataSlice';
+import {fetchUsers, incrementPage, resetPage} from '../redux/userDataSlice';
 import {COLORS} from '../theme/Theme';
 
 const UserList = () => {
@@ -47,7 +47,7 @@ const UserList = () => {
   // Refresh data (it will reset page with page 1 and fetch data again)
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    dispatch(resetUsers());
+    dispatch(resetPage());
     dispatch(fetchUsers());
   }, [dispatch]);
 
@@ -74,7 +74,7 @@ const UserList = () => {
   }
 
   // Make sure data is not loading and render error if has any
-  if (!loading && error) {
+  if (!loading && error && !refreshing) {
     return (
       <View style={[styles.container, {justifyContent: 'center'}]}>
         <Text style={styles.errorText}>

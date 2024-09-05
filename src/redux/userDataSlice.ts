@@ -48,8 +48,8 @@ const userSlice = createSlice({
       state.page += 1;
     },
     // reset user data and start page with 1
-    resetUsers(state) {
-      state.users = [];
+    resetPage(state) {
+      // state.users = [];
       state.page = 1;
     },
   },
@@ -60,11 +60,14 @@ const userSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      // Push new data to state when API success
+      // Push new data to state when API success (if user refresh it will store only action data it will clear old data and start with fresh data)
       .addCase(
         fetchUsers.fulfilled,
         (state, action: PayloadAction<UserList[]>) => {
-          state.users = [...state.users, ...action.payload];
+          state.users =
+            state.page === 1
+              ? [...action.payload]
+              : [...state.users, ...action.payload];
           state.loading = false;
         },
       )
@@ -82,5 +85,5 @@ export const selectLoading = (state: RootState) => state.users.loading;
 export const selectError = (state: RootState) => state.users.error;
 export const selectPage = (state: RootState) => state.users.page;
 
-export const {incrementPage, resetUsers} = userSlice.actions;
+export const {incrementPage, resetPage} = userSlice.actions;
 export default userSlice.reducer;
