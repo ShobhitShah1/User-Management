@@ -37,7 +37,9 @@ const UserList = () => {
   // Increment page and fetch data
   const loadMoreData = useCallback(() => {
     if (!loading) {
+      // increment page +1
       dispatch(incrementPage());
+      // fetch data with +1 page
       dispatch(fetchUsers());
     }
   }, [dispatch, loading]);

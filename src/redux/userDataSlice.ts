@@ -10,6 +10,7 @@ const initialState: UserState = {
   page: 1,
 };
 
+// createAsyncThunk will handle API with pagination. get page value from state and pass to `getUserData`
 export const fetchUsers = createAsyncThunk<
   UserList[],
   void,
@@ -17,6 +18,7 @@ export const fetchUsers = createAsyncThunk<
 >('users/fetchUsers', async (_, {getState, rejectWithValue}) => {
   const {page} = getState().users;
   try {
+    // API service to handel API's
     const response = await getUserData(page);
     return response;
   } catch (error: any) {
@@ -41,20 +43,24 @@ const userSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
+    // set page +1
     incrementPage(state) {
       state.page += 1;
     },
+    // reset user data and start page with 1
     resetUsers(state) {
       state.users = [];
       state.page = 1;
     },
   },
   extraReducers: builder => {
+    // Make loader true when fetching data
     builder
       .addCase(fetchUsers.pending, state => {
         state.loading = true;
         state.error = null;
       })
+      // Push new data to state when API success
       .addCase(
         fetchUsers.fulfilled,
         (state, action: PayloadAction<UserList[]>) => {
@@ -62,6 +68,7 @@ const userSlice = createSlice({
           state.loading = false;
         },
       )
+      // throw error
       .addCase(fetchUsers.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;

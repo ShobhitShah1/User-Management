@@ -1,5 +1,5 @@
 import React, {memo, useCallback} from 'react';
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import {Alert, Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {COLORS} from '../theme/Theme';
 import {User} from '../types/interfaces';
 import {useNavigation} from '@react-navigation/native';
@@ -9,7 +9,11 @@ const RenderUserList = ({item}: {item: User}) => {
   const navigation = useNavigation();
 
   const onPressCard = useCallback(() => {
-    navigation.navigate('UserDetail', {userData: item});
+    if (item) {
+      navigation.navigate('UserDetail', {userData: item});
+    } else {
+      Alert.alert('Error', 'User data not found!');
+    }
   }, [item, navigation]);
 
   return (

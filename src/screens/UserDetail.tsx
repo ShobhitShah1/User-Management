@@ -11,6 +11,7 @@ type UserCardData = {
 };
 
 const UserDetail = () => {
+  // Get data from routes
   const {params} = useRoute<RouteProp<UserCardData, 'params'>>();
   const userData = useMemo(() => params?.userData, [params]);
 
@@ -22,7 +23,6 @@ const UserDetail = () => {
     cell,
     dob,
     location,
-    id,
     gender,
     registered,
     login,
