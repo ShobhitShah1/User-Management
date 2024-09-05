@@ -12,9 +12,10 @@ const initialState: UserState = {
 
 export const fetchUsers = createAsyncThunk<
   UserList[],
-  number,
+  void,
   {state: RootState; rejectValue: string}
->('users/fetchUsers', async (page, {rejectWithValue}) => {
+>('users/fetchUsers', async (_, {getState, rejectWithValue}) => {
+  const {page} = getState().users;
   try {
     const response = await getUserData(page);
     return response;
@@ -22,6 +23,19 @@ export const fetchUsers = createAsyncThunk<
     return rejectWithValue(error.message);
   }
 });
+
+// export const fetchUsers = createAsyncThunk<
+//   UserList[],
+//   number,
+//   {state: RootState; rejectValue: string}
+// >('users/fetchUsers', async (page, {rejectWithValue}) => {
+//   try {
+//     const response = await getUserData(page);
+//     return response;
+//   } catch (error: any) {
+//     return rejectWithValue(error.message);
+//   }
+// });
 
 const userSlice = createSlice({
   name: 'users',
