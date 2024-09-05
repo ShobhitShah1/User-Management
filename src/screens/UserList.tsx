@@ -51,7 +51,7 @@ const UserList = () => {
 
   // When more data is loading then show loader in bottom
   const listFooterComponent = () => {
-    if (loading) {
+    if (loading && !refreshing) {
       return (
         <View style={styles.footerContainer}>
           <ActivityIndicator size={25} color={COLORS.black} />
