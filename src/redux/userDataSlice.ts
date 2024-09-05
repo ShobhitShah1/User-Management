@@ -10,7 +10,7 @@ const initialState: UserState = {
   page: 1,
 };
 
-// createAsyncThunk will handle API with pagination. get page value from state and pass to `getUserData`
+// createAsyncThunk(use redux-thunk) will handle API with pagination. get page value from state and pass to `getUserData`
 export const fetchUsers = createAsyncThunk<
   UserList[],
   void,
